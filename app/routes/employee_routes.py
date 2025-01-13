@@ -140,7 +140,7 @@ def update_employee_by_id(employee_id):
         message, status_code = mongo_db.update_employee_in_db(employee_id, data)
         if status_code == 200:
             logging.info(f"\t Employee updated successfully")
-            return jsonify({'message': message}), status_code
+            return jsonify({'message': message}), 200
         else:
             logging.error(f"\t Error: {message}")
             return jsonify({'message': message}), status_code
@@ -161,6 +161,22 @@ def delete_employee_by_id(employee_id):
         else:
             logging.error(f"\t Error: {message}")
             return jsonify({'message': message}), status_code
+    except Exception as e:
+        logging.error(f'\t Error: {e}')
+        return jsonify({'message': 'An error occurred'}), 500
+
+@app_employee.route('/list-employees', methods=['GET'])
+def list_employees():
+    try:
+        logging.info('\t Inside List Employees Function')
+        logging.info(f"\t Fetching all employees from the database")
+        employees, status_code = mongo_db.get_all_employees_from_db()
+        if status_code == 200:
+            logging.info(f"\t Employees fetched successfully")
+            return jsonify(employees), 200
+        else:
+            logging.error(f"\t Error: {employees}")
+            return jsonify({'Error': employees}), status_code
     except Exception as e:
         logging.error(f'\t Error: {e}')
         return jsonify({'message': 'An error occurred'}), 500

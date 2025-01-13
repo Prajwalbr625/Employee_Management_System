@@ -93,11 +93,11 @@ def update_department_by_id(departmentID):
         logging.info(f'\t The user has passed this Department ID: {departmentID}')
 
         logging.info(f"\t Checking for Unwanted fields")
-        presence_fields = ['name', 'location', 'employeeIDs']
+        presence_fields = ['name','location']
         for field in request_data:
             if field not in presence_fields:
-                logging.error(f"\t {field} is not required")
-                return jsonify({'message': f'{field} is not required'}), 400
+                logging.error(f"\t {presence_fields} only these fiedls can be updated")
+                return jsonify({'message': f'{presence_fields} only these fiedls can be updated'}), 400
         
         logging.info(f"\t Checking for data types")
         type_checks = {
@@ -141,6 +141,23 @@ def delete_department_by_id(departmentID):
             logging.error(f"\t Error: {message}")
             return jsonify({'Error': message}), status_code
         
+    except Exception as e:
+        logging.error(f'\t Error: {e}')
+        return jsonify({'message': 'An error occurred'}), 500
+    
+# /list-departments
+@app_department.route('/list-departments', methods=['GET'])
+def list_departments():
+    try:
+        logging.info('\t Inside List Departments Function')
+        logging.info(f"\t Fetching all departments from the database")
+        departments, status_code = mongo_db.get_all_departments_from_db()
+        if status_code == 200:
+            logging.info(f"\t Departments fetched successfully")
+            return jsonify(departments), 200
+        else:
+            logging.error(f"\t Error: {departments}")
+            return jsonify({'message': 'Error fetching departments'}), status_code
     except Exception as e:
         logging.error(f'\t Error: {e}')
         return jsonify({'message': 'An error occurred'}), 500

@@ -27,7 +27,7 @@ class DB:
             return e, 500
         
 
-# ---------------------- Employee DB Functions ---------------------- #
+# ----------------------------------- Employee DB Functions --------------------------------- #
 
     def add_employee_to_db(self, employee_data):
         try:    
@@ -80,14 +80,30 @@ class DB:
             result = self.employeeCollection.delete_one({'employeeID': employee_id})
             if result.deleted_count == 1:
                 logging.info(f'\t Employee ID is deleted successfully from the Employee DB')
-                self.update_department_in_db(employee_data.get('departmentID'), {'$pull': {'employeeIDs': employee_id}}, remove_flag=True)
+                self.departmentCollection.update_one({'departmentID': employee_data.get('departmentID')}, {'$pull': {'employeeIDs': employee_id}})
                 logging.info(f'\t Employee ID is removed successfully from the Department DB')
                 return 'Employee deleted successfully', 204
         except Exception as e:
-            logging.error(f'\t Error: {e} -->  Returned 500 Internal Server Error')
-            return e, 500
+            logger.error(f'\t Error: {e} -->  Returned 500 Internal Server Error')
+            return str(e), 500       
 
-# ---------------------- Department DB Functions ---------------------- #
+    def get_all_employees_from_db(self):
+        try:
+            logging.info(f'\t Inside Get All Employees Function --> Models.py')
+            employees = list(self.employeeCollection.find())
+            if not employees:
+                logging.error(f'\t No employees found in the DB')
+                return 'No employees found in the DB', 404
+            for employee in employees:
+                employee.pop('_id', None)
+            logging.info(f'\t Employees fetched successfully')
+            return employees, 200
+        except Exception as e:
+            logging.error(f'\t Error: {e} --> Returned 500 Internal Server Error')
+            return str(e), 500
+
+
+# ------------------------------ Department DB Functions -------------------------------- #
         
     def add_department_to_db(self, department_data):
         try:
@@ -135,16 +151,31 @@ class DB:
             if department_presence_status_code != 200:
                 logging.error(f'\t Department not found in the DB')
                 return 'Department not found in the DB', 404
+            employee_ids = department_data.get('employeeIDs', [])
+            for employee_id in employee_ids:
+                self.delete_employee_from_db(employee_id)
             result = self.departmentCollection.delete_one({'departmentID': department_id})
             if result.deleted_count == 1:
                 logging.info(f'\t Department ID is deleted successfully from the Department DB')
-                for employee_id in department_data.get('employeeIDs'):
-                    self.delete_employee_from_db(employee_id)
-                logging.info(f'\t Employee IDs are removed successfully from the Employee DB')
                 return 'Department deleted successfully', 204
         except Exception as e:
             logger.error(f'\t Error: {e} -->  Returned 500 Internal Server Error')
-            return e, 500
+            return str(e), 500
+       
+    def get_all_departments_from_db(self):
+        try:
+            logging.info(f'\t Inside Get All Departments Function --> Models.py')
+            departments = list(self.departmentCollection.find())
+            if not departments:
+                logging.error(f'\t No employees found in the DB')
+                return 'No employees found in the DB', 404
+            for department in departments:
+                department.pop('_id', None)
+            logging.info(f'\t Employees fetched successfully')
+            return departments, 200
+        except Exception as e:
+            logging.error(f'\t Error: {e} --> Returned 500 Internal Server Error')
+            return str(e), 500
         
 
 # Initialize the DB class
