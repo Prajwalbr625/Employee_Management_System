@@ -7,7 +7,7 @@ import random
 fake = faker.Faker()
 
 # Define the scenarios
-scenarios('user.feature')
+scenarios('Employee.feature')
 # scenarios('department.feature')
 
 url = 'http://localhost:8080'
