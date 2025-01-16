@@ -24,7 +24,7 @@ class DB:
         if result:
             return 'Employee with the same name already exists, Please provide Different Name', 409
         self.employeeCollection.insert_one(employee_data)
-        self.departmentCollection.update_one({'departmentID': employee_data.get('departmentID')}, {'$push': {'employeeID': employee_data.get('employeeID')}})
+        self.departmentCollection.update_one({'departmentID': employee_data.get('departmentID')}, {'$push': {'employeeIDs': employee_data.get('employeeID')}})
         return 'Employee added successfully', 201
 
     def get_specific_employee_from_db(self, employee_id):
@@ -47,7 +47,6 @@ class DB:
             return 'Employee not found in the DB', 404
         result = self.employeeCollection.delete_one({'employeeID': employee_id})
         if result.deleted_count == 1:
-            self.departmentCollection.update_one({'departmentID': employee_data.get('departmentID')}, {'$pull': {'employeeID': employee_id}})
             return 'Employee deleted successfully', 204     
 
     def get_all_employees_from_db(self):
@@ -91,10 +90,9 @@ class DB:
             return {'message': message}, 404
         result = self.departmentCollection.delete_one({'departmentID': department_id})
         if result.deleted_count == 1:
-            self.employeeCollection.delete_many({'departmentID': department_id})
-            return 'Department and all associated employees deleted successfully', 204
+            return 'Department deleted successfully', 204
 
-       
+
     def get_all_departments_from_db(self):
         departments = list(self.departmentCollection.find())
         if not departments:

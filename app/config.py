@@ -2,4 +2,3 @@ MONGO_URI = 'mongodb+srv://prajwalpraju625:Shot1122@shotcluster.4adgs.mongodb.ne
 MONGO_DB_NAME = 'Shot_DB'
 MONGO_EMPLOYEE_COLLECTION_NAME = 'employeeDB'
 MONGO_DEPARTMENT_COLLECTION_NAME = 'departmentDB'
-MONGO_USER_COLLECTION = 'KRUTRIM_USERS'
