@@ -48,14 +48,6 @@ class DB:
         if result.deleted_count == 1:
             return 'Employee deleted successfully', 204     
 
-    def get_all_employees_from_db(self):
-        employees = list(self.employeeCollection.find())
-        if not employees:
-            return 'No employees found in the DB', 404
-        for employee in employees:
-            employee.pop('_id', None)
-        return employees, 200
-
 
 # ------------------------------ Department DB Functions -------------------------------- #
         
@@ -91,14 +83,6 @@ class DB:
         if result.deleted_count == 1:
             return 'Department deleted successfully', 204
 
-
-    def get_all_departments_from_db(self):
-        departments = list(self.departmentCollection.find())
-        if not departments:
-            return 'Department is not found in the DB', 404
-        for department in departments:
-            department.pop('_id', None)
-        return departments, 200
 
 # Initialize the DB class
 mongo_db = DB()

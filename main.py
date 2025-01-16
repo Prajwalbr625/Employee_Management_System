@@ -2,6 +2,7 @@ from flask import jsonify, request, Flask
 from app.models.models import mongo_db
 import uuid
 
+
 app = Flask(__name__)
 
 
@@ -51,14 +52,6 @@ def delete_employee_by_id(employee_id):
     else:
         return jsonify({'Error': message}), status_code
 
-#List all Employee GET method
-@app.route('/list-employees', methods=['GET'])
-def list_employees():
-    employees, status_code = mongo_db.get_all_employees_from_db()
-    if status_code == 200:
-        return jsonify(employees), 200
-    else:
-        return jsonify({'Error': employees}), status_code
 
 #Department POST method
 @app.route('/departments', methods=['POST'])
@@ -119,35 +112,7 @@ def delete_department_by_id(departmentID):
         return jsonify({'Error': message}), status_code
 
     
-#List all Department GET method
-@app.route('/list-departments', methods=['GET'])
-def list_departments():
-    departments, status_code = mongo_db.get_all_departments_from_db()
-    if status_code == 200:
-        return jsonify(departments), 200
-    else:
-        return jsonify({'message': 'Error fetching departments'}), status_code
-    
 # Report Routes
-
-@app.route('/report/departmentList', methods=['POST'])
-def list_departments_by_name():
-    data = request.get_json()
-    department_name = data.get('name')
-    if not department_name:
-        return jsonify({"error": "Department name is required"}), 400
-
-    departments = mongo_db.departmentCollection.find({"name": department_name})
-    department_list = []
-    for department in departments:
-        department.pop('_id', None)
-        department_list.append(department)
-    
-    if not department_list:
-        return jsonify({"message": "No departments found"}), 404
-    
-    return jsonify({"departments": department_list}), 200
-
 
 @app.route('/report/employeeSalary', methods=['POST'])
 def list_employees_by_salary():
