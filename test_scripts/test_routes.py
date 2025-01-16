@@ -2,7 +2,6 @@ import pytest
 from pytest_bdd import scenarios, given, when, then
 import requests
 import faker
-import random
 
 fake = faker.Faker()
 

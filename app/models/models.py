@@ -14,7 +14,6 @@ class DB:
         client = MongoClient(config.MONGO_URI)
         self.db = client[config.MONGO_DB_NAME]
         return self.db
-
         
 
 # ----------------------------------- Employee DB Functions --------------------------------- #

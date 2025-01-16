@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, Flask
+from flask import jsonify, request, Flask
 from app.models.models import mongo_db
 import uuid
 
